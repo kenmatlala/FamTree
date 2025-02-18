@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}{{ person.get_full_name }} - Family Tree{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>{{ person.get_full_name }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Personal Information</h4>
+                        <p><strong>Birth Date:</strong> {{ person.birth_date|default:"Unknown" }}</p>
+                        <p><strong>Birth Place:</strong> {{ person.birth_place|default:"Unknown" }}</p>
+                        <p><strong>Age:</strong> {{ person.age|default:"Unknown" }}</p>
+                        {% if person.death_date %}
+                            <p><strong>Death Date:</strong> {{ person.death_date }}</p>
+                        {% endif %}
+                        <p><strong>Gender:</strong> {{ person.get_gender_display|default:"Not specified" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Quick Actions</h4>
+                        <div class="btn-group">
+                            <a href="{% url 'family_tree:add_relationship' %}?person1={{ person.id }}" class="btn btn-primary">Add Relationship</a>
+                            <a href="#" class="btn btn-secondary">Edit Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Parents</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if parents %}
+                            <ul class="list-group">
+                                {% for parent_rel in parents %}
+                                    <li class="list-group-item">
+                                        <a href="{% url 'family_tree:view_tree' person_id=parent_rel.parent.id %}">
+                                            {{ parent_rel.parent.get_full_name }}
+                                        </a>
+                                        <span class="badge bg-secondary">{{ parent_rel.get_relationship_type_display }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No parents recorded</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Relationships</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if relationships %}
+                            <ul class="list-group">
+                                {% for rel in relationships %}
+                                    <li class="list-group-item">
+                                        {% if rel.person1 == person %}
+                                            <a href="{% url 'family_tree:view_tree' person_id=rel.person2.id %}">
+                                                {{ rel.person2.get_full_name }}
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'family_tree:view_tree' person_id=rel.person1.id %}">
+                                                {{ rel.person1.get_full_name }}
+                                            </a>
+                                        {% endif %}
+                                        <span class="badge {% if rel.is_current %}bg-success{% else %}bg-secondary{% endif %}">
+                                            {{ rel.get_relationship_type_display }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No relationships recorded</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Children</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if children %}
+                            <ul class="list-group">
+                                {% for child_rel in children %}
+                                    <li class="list-group-item">
+                                        <a href="{% url 'family_tree:view_tree' person_id=child_rel.child.id %}">
+                                            {{ child_rel.child.get_full_name }}
+                                        </a>
+                                        <span class="badge bg-secondary">{{ child_rel.get_relationship_type_display }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No children recorded</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

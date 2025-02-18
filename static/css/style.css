@@ -1,0 +1,318 @@
+/* Base Styles */
+:root {
+    --primary-color: #3b82f6;
+    --secondary-color: #10b981;
+    --accent-color: #8b5cf6;
+    --text-color: #1f2937;
+    --background-color: #f3f4f6;
+    --border-color: #e5e7eb;
+    --success-color: #22c55e;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+}
+
+/* General Layout */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Navigation */
+.nav {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Family Tree Visualization */
+.family-tree {
+    position: relative;
+    overflow: auto;
+    padding: 2rem;
+    min-height: 600px;
+}
+
+.tree-node {
+    position: relative;
+    background-color: blue;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 200px;
+    margin: 1rem;
+    transition: all 0.3s ease;
+}
+
+.tree-node:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.tree-node.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.tree-connector {
+    position: absolute;
+    background-color: var(--border-color);
+    z-index: -1;
+}
+
+.tree-connector-vertical {
+    width: 2px;
+}
+
+.tree-connector-horizontal {
+    height: 2px;
+}
+
+/* Relationship Lines */
+.relationship-line {
+    position: absolute;
+    background-color: var(--secondary-color);
+    z-index: -1;
+}
+
+.relationship-line.marriage {
+    border: 2px solid var(--secondary-color);
+}
+
+.relationship-line.partnership {
+    border: 2px dashed var(--secondary-color);
+}
+
+/* Person Cards */
+.person-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.person-card:hover {
+    transform: translateY(-2px);
+}
+
+.person-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+    font-size: 1.25rem;
+}
+
+.person-details {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #059669;
+}
+
+/* Search Components */
+.search-box {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.search-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+/* Alerts and Messages */
+.alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tree-node {
+        min-width: 150px;
+    }
+
+    .container {
+        padding: 0 0.5rem;
+    }
+
+    .person-card {
+        padding: 1rem;
+    }
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Tooltips */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    .family-tree {
+        overflow: visible;
+    }
+
+    .tree-node {
+        break-inside: avoid;
+    }
+}

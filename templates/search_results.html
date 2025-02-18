@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-6">Search Results</h1>
+
+        <!-- Search Form -->
+        <form method="get" class="mb-8">
+            <div class="flex gap-4">
+                <input type="text"
+                       name="q"
+                       value="{{ query }}"
+                       class="flex-1 form-input"
+                       placeholder="Search by name...">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        <!-- Results -->
+        {% if page_obj %}
+            <p class="mb-4">Found {{ total_results }} results for "{{ query }}"</p>
+
+            <div class="space-y-4">
+                {% for person in page_obj %}
+                    <div class="border rounded p-4 hover:bg-gray-50">
+                        <a href="{% url 'person_detail' person.id %}" class="block">
+                            <h2 class="font-medium">{{ person.get_full_name }}</h2>
+                            <p class="text-sm text-gray-600">
+                                {% if person.birth_date %}Born: {{ person.birth_date }}{% endif %}
+                                {% if person.age %} (Age: {{ person.age }}){% endif %}
+                                {% if person.birth_place %} in {{ person.birth_place }}{% endif %}
+                            </p>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <div class="flex justify-center space-x-2 mt-6">
+                    {% if page_obj.has_previous %}
+                        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="btn btn-primary">{{ num }}</span>
+                        {% else %}
+                            <a href="?q={{ query }}&page={{ num }}" class="btn btn-secondary">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {% if query %}
+                <p>No results found for "{{ query }}".</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4">{{ person.get_full_name }}</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Basic Information -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold">Basic Information</h2>
+                <dl class="grid grid-cols-2 gap-2">
+                    {% if person.birth_date %}
+                        <dt>Birth Date:</dt>
+                        <dd>{{ person.birth_date }}</dd>
+                    {% endif %}
+
+                    {% if person.age %}
+                        <dt>Age:</dt>
+                        <dd>{{ person.age }} years</dd>
+                    {% endif %}
+
+                    {% if person.birth_place %}
+                        <dt>Birth Place:</dt>
+                        <dd>{{ person.birth_place }}</dd>
+                    {% endif %}
+
+                    {% if person.gender %}
+                        <dt>Gender:</dt>
+                        <dd>{{ person.get_gender_display }}</dd>
+                    {% endif %}
+                </dl>
+            </div>
+
+            <!-- Family Relationships -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold">Family Relationships</h2>
+
+                {% if family_members.parents %}
+                    <div class="mb-4">
+                        <h3 class="font-medium">Parents:</h3>
+                        <ul class="list-disc pl-5">
+                            {% for parent_rel in family_members.parents %}
+                                <li>{{ parent_rel.parent.get_full_name }} ({{ parent_rel.get_relationship_type_display }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if family_members.siblings %}
+                    <div class="mb-4">
+                        <h3 class="font-medium">Siblings:</h3>
+                        <ul class="list-disc pl-5">
+                            {% for sibling in family_members.siblings %}
+                                <li>{{ sibling.get_full_name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if current_partners %}
+                    <div class="mb-4">
+                        <h3 class="font-medium">Current Partners:</h3>
+                        <ul class="list-disc pl-5">
+                            {% for partner in current_partners %}
+                                <li>{{ partner.get_full_name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if family_members.children %}
+                    <div class="mb-4">
+                        <h3 class="font-medium">Children:</h3>
+                        <ul class="list-disc pl-5">
+                            {% for child_rel in family_members.children %}
+                                <li>{{ child_rel.child.get_full_name }} ({{ child_rel.get_relationship_type_display }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 space-x-4">
+            <a href="{% url 'family_tree:add_relationship' %}" class="btn btn-primary">Add Relationship</a>
+            <a href="{% url 'family_tree:add_parent_child' %}" class="btn btn-primary">Add Parent/Child</a>
+            <a href="{% url 'family_tree:view_tree' person.id %}" class="btn btn-secondary">View Family Tree</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

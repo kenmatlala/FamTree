@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Relationship Result - Family Tree{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Relationship Between {{ person1.get_full_name }} and {{ person2.get_full_name }}</h2>
+    </div>
+    <div class="card-body">
+        <p class="lead">{{ relationship_description }}</p>
+
+        <div class="mt-4">
+            <a href="{% url 'family_tree:view_tree' person_id=person1.id %}" class="btn btn-primary">
+                View {{ person1.first_name }}'s Tree
+            </a>
+            <a href="{% url 'family_tree:view_tree' person_id=person2.id %}" class="btn btn-primary">
+                View {{ person2.first_name }}'s Tree
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

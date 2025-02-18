@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Family Tree Explorer</h1>
+        {% if user.is_authenticated %}
+            <p class="text-gray-600">Welcome back, {{ user.get_full_name|default:user.username }}</p>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            <a href="{% url 'family_tree:add_person' %}" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-6 text-center transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Add Family Member</h3>
+                <p class="text-sm">Add a new person to your family tree</p>
+            </a>
+            
+            <a href="{% url 'family_tree:add_relationship' %}" class="bg-green-500 hover:bg-green-600 text-white rounded-lg p-6 text-center transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Add Relationship</h3>
+                <p class="text-sm">Record marriages, partnerships, and other relationships</p>
+            </a>
+            
+            <a href="{% url 'family_tree:search_people' %}" class="bg-purple-500 hover:bg-purple-600 text-white rounded-lg p-6 text-center transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Search Tree</h3>
+                <p class="text-sm">Find and explore family connections</p>
+            </a>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-10">
+            <h2 class="text-2xl font-semibold mb-4">Recent Activity</h2>
+            <div class="space-y-4">
+                {% for person in recent_people %}
+                    <div class="flex items-center justify-between border-b pb-4">
+                        <div>
+                            <a href="{% url 'family_tree:person_detail' person.id %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                                {{ person.get_full_name }}
+                            </a>
+                            <p class="text-sm text-gray-500">Added {{ person.created_at|timesince }} ago</p>
+                        </div>
+                        <a href="{% url 'family_tree:view_tree' person.id %}" class="text-sm text-blue-500 hover:text-blue-700">
+                            View in Tree →
+                        </a>
+                    </div>
+                {% empty %}
+                    <p class="text-gray-500">No recent activity</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Find Relationships Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-10">
+            <h2 class="text-2xl font-semibold mb-4">Find Family Connections</h2>
+            <form action="{% url 'family_tree:find_relationship' person1_id=1 person2_id=2 %}" method="GET" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="person1" class="block text-sm font-medium text-gray-700 mb-2">First Person</label>
+                        <select name="person1" id="person1" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <option value="">Select a person...</option>
+                            {% for person in all_people %}
+                                <option value="{{ person.id }}">{{ person.get_full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="person2" class="block text-sm font-medium text-gray-700 mb-2">Second Person</label>
+                        <select name="person2" id="person2" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <option value="">Select a person...</option>
+                            {% for person in all_people %}
+                                <option value="{{ person.id }}">{{ person.get_full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
+                    Find Connection
+                </button>
+            </form>
+        </div>
+
+        <!-- Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Total Family Members</h3>
+                <p class="text-3xl font-bold text-blue-500">{{ total_people }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Relationships</h3>
+                <p class="text-3xl font-bold text-green-500">{{ total_relationships }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Generations</h3>
+                <p class="text-3xl font-bold text-purple-500">{{ total_generations }}</p>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Login Prompt -->
+        <div class="text-center bg-white rounded-lg shadow-md p-8 max-w-md mx-auto">
+            <h2 class="text-2xl font-semibold mb-4">Welcome to Family Tree Explorer</h2>
+            <p class="text-gray-600 mb-6">Please log in to access your family tree</p>
+            <a href="{% url 'family_tree:login' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-md transition duration-300">
+                Log In
+            </a>
+            <p class="mt-4 text-sm text-gray-500">
+                Don't have an account? 
+                <a href="{% url 'family_tree:register' %}" class="text-blue-500 hover:text-blue-700">Register here</a>
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
